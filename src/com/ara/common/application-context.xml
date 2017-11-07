@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+
+	<bean id="keyGenerator" class="com.ara.beans.KeyGenerator" />
+	<!-- <bean id="keyGenerator1" class="com.ara.beans.KeyGenerator" />
+	<bean id="keyGenerator2" class="com.ara.beans.KeyGenerator" />  -->
+	<bean id="keyCheckAspect" class="com.ara.aspect.KeyCheckAspect" /> 
+	
+	<aop:config>
+	    <!-- How to use execution() pcd. 
+	         when we wanted to go for specific method then only we are going to use execution() pcd -->
+	    <aop:pointcut expression="execution(public int com.ara.beans.KeyGenerator.generateKey(int))" id="pc1"/>
+	    
+	    <!-- How to use within() pcd 
+	         when we wanted to go for all the classes in side specific package then we are going to use within() pcd -->
+	    <!-- <aop:pointcut expression="within(com.ara.beans.*)" id="pc1"/> -->
+	    
+	    <!-- How to use target() pcd  
+	         when we wanted to use specific class then we are going to use target() pcd -->
+	    <!-- <aop:pointcut expression="target(com.ara.beans.KeyGenerator)" id="pc1"/> -->
+		
+		<!-- How to use this() pcd 
+		     If the object ref is this(In this case KeyGenerator) type then advice it. -->
+		<!-- <aop:pointcut expression="this(com.ara.beans.KeyGenerator)" id="pc1"/> -->	  
+		
+		<!-- For Example we have two bean definition 
+		I don't want both the bean is being advised, for keyGenerator2 i don't want to be advised 
+		at specific beanId only advised otherwise don't avdised then we should go for bean() pcd -->
+		
+		<!-- <aop:pointcut expression="bean(keyGenerator1)" id="pc1"/> -->
+		
+		<aop:aspect ref="keyCheckAspect">
+			<aop:after-returning method="check" pointcut-ref="pc1" returning="key"/>
+		</aop:aspect>
+	</aop:config>
+</beans>
